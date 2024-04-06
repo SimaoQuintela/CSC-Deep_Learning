@@ -136,11 +136,25 @@ Define a high level fit and predict making use of the tape gradient
 aka what we did last class
 '''
 def high_level_fit_and_predict():
+    # create callbacks
+    callbacks = [
+        tf.keras.callbacks.ModelCheckpoint(
+            filepath="ModelCheckpoint/my_model.hdf5",
+            save_best_only=True,
+            monitor = 'val_loss',
+            save_weights_only=True,
+            verbose=1,
+            period=2
+            
+        )
+    ]
+    
+    
     # shortcut to compile and fit a model
     mlp.compile(optimizer='adam', loss=loss_object, metrics=[train_metric])
     # since the train_dataset already takes care of batching, we don't pass a batch_size argument
     # passing validation data for monitoring validation loss and metrics at the end of each epoch
-    history = mlp.fit(train_dataset, validation_data=validation_dataset, epochs=epochs)
+    history = mlp.fit(train_dataset, validation_data=validation_dataset, epochs=epochs, callbacks=callbacks)
     print('\nHistory values per epoch: ', history.history)
     
     # evaluating the model on the test data
@@ -172,5 +186,5 @@ train_dataset, validation_dataset, x_test, y_test = import_data()
 mlp, optimizer, loss_object, train_metric, val_metric = prepare_model()
 
 # use low-level or high-level fit and predict
-low_level_fit_and_predict()
-#high_level_fit_and_predict()
+#low_level_fit_and_predict()
+high_level_fit_and_predict()
